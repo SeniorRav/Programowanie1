@@ -13,6 +13,7 @@ public class Silnia {
 
     public static int silnia(int arg){
         int silnia = 1;
+        
        while(arg >1){
            silnia *= arg--;
        }

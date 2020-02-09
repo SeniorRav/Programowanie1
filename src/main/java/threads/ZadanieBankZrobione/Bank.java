@@ -4,8 +4,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Bank {
-    static Integer customerNumber = 0;
-    static Integer accountNumber = 0;
+    private static Integer customerNumber = 0;
+    private static Integer accountNumber = 0;
+
+    public String getNextCustomerNumber(){
+       String newId = customerNumber.toString();
+       customerNumber++;
+       return newId;
+
+    }
+
+    public String getNextAccountNumber(){
+       String newId ="IBAN"+accountNumber.toString();
+        accountNumber++;
+        return newId;
+
+    }
+
 
     private String name;
     private List<Customer> customers;
@@ -15,14 +30,21 @@ public class Bank {
         customers = new ArrayList<>();
     }
 
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
+    }
+
     public boolean addCustomer(Customer customer){
         if(checkCustomerOnList(customer)){
             System.out.println("Klient "+customer+"już jest w systemie.");
             return false;
         }
-        customer.setId(customerNumber.toString());
+        customer.setId(getNextCustomerNumber());
         customers.add(customer);
-        customerNumber++;
         System.out.println("Klient "+ customer + " dodany");
         return true;
     }
@@ -58,7 +80,7 @@ public class Bank {
         if(checkCustomerOnList(customer)){
             List<Account>customerAccounts = customer.getAccounts();
             Account account = new Account(
-                    "IBAN"+accountNumber.toString());
+                    getNextAccountNumber());
             account.setAccountKind(accountKind);
             customerAccounts.add(account);
             accountNumber++;
@@ -110,8 +132,8 @@ public class Bank {
             accounts.stream()
                     .forEach(a -> System.out.println(
                             "\t"+a.getAccountNumber()+
-                                    " " +a.getAccountKind()+
-                                    (printBalance ? a.getBalance() : "")
+                                    " " +a.getAccountKind()+""+
+                                     (printBalance ? a.getBalance() : "")
                     ));
         }
 

@@ -33,6 +33,10 @@ public class Account {
         return accountNumber;
     }
 
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
     public void deposit(int amount){
         this.balance+=amount;
         System.out.println("Wpłata na rachunek"+this.accountNumber
@@ -43,7 +47,7 @@ public class Account {
     public boolean withdraw(int amount){
         if(this.balance<amount){
             System.out.println("Stan konta "+this.accountNumber+
-                    " mniejsze niż żądana kwota :" amount);
+                    " mniejsze niż żądana kwota :"+ amount);
             return false;
         }
         this.balance -= amount;
@@ -64,4 +68,7 @@ public class Account {
     public int hashCode() {
         return Objects.hash(accountNumber);
     }
+
+
+
 }

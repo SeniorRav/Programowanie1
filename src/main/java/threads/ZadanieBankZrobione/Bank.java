@@ -16,7 +16,7 @@ public class Bank {
     }
 
     public boolean addCustomer(Customer customer){
-        if(customers.contains(customer)){
+        if(checkCustomerOnList(customer)){
             System.out.println("Klient "+customer+"już jest w systemie.");
             return false;
         }
@@ -28,7 +28,7 @@ public class Bank {
     }
 
     public boolean removeCustomer(Customer customer){
-        if(customers.contains(customer)){
+        if(checkCustomerOnList(customer)){
             return removeCustomerIfHasNotAccounts(customer);
         }
         return customerNotFound(customer);
@@ -55,7 +55,7 @@ public class Bank {
     }
 
     public boolean addAccount(Customer customer, AccountKind accountKind){
-        if(customers.contains(customer)){
+        if(checkCustomerOnList(customer)){
             List<Account>customerAccounts = customer.getAccounts();
             Account account = new Account(
                     "IBAN"+accountNumber.toString());
@@ -67,6 +67,10 @@ public class Bank {
             return true;
         }
         return customerNotFound(customer);
+    }
+
+    private boolean checkCustomerOnList(Customer customer) {
+        return customers.contains(customer);
     }
 
 }

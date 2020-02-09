@@ -18,17 +18,17 @@ public class SilniaTest {
         System.out.println("Afterek");
     }
 
-    @Test
-    public void silnia() {
-
-        int silniaValue = Silnia.silnia(6);
-
-        assertEquals(720,silniaValue);
-    }
-
-    @Test
-    public void testSilnia5(){
-        int silniaValue = Silnia.silnia(5);
-        assertEquals(120,silniaValue);
-    }
+//    @Test
+//    public void silnia() {
+//
+//        int silniaValue = Silnia.silnia(6);
+//
+//        assertEquals(720,silniaValue);
+//    }
+//
+//    @Test
+//    public void testSilnia5(){
+//        int silniaValue = Silnia.silnia(5);
+//        assertEquals(120,silniaValue);
+//    }
 }

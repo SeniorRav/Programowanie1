@@ -84,8 +84,57 @@ public class Bank {
         return customerNotFound(customer);
     }
 
+    public boolean withdraw (Customer customer,Account account,int amount){
+        if(checkCustomerOnList(customer)) {
+            List<Account> accounts = customer.getAccounts();
+            if (accounts.contains(account)) {
+                if (accounts.get(accounts.indexOf(account)).withdraw(amount)) {
+                    System.out.println("Wypłata " + amount + " z rachunku"
+                            + account + " zaksiegowana.");
+                    return true;
+                }
+                System.out.println("Wypłata nie powiodła się");
+                return false;
+            }
+            System.out.println("Nie znaleziono konta "+ account+" dla klienta"+ customer);
+            return false;
+        }
+        return customerNotFound(customer);
+
+
+    }
+
+    public void printAccountList(Customer customer, boolean printBalance){
+        if(checkCustomerOnList(customer)){
+            List<Account> accounts = customer.getAccounts();
+            accounts.stream()
+                    .forEach(a -> System.out.println(
+                            "\t"+a.getAccountNumber()+
+                                    " " +a.getAccountKind()+
+                                    (printBalance ? a.getBalance() : "")
+                    ));
+        }
+
+
+
+    }
+
+    public void printCustomerList (boolean printBalance){
+        customers.stream()
+                .forEach(c->
+                    printCustomerAndHisAccounts(printBalance, c)
+                );
+    }
+
+    private void printCustomerAndHisAccounts(boolean printBalance, Customer c) {
+        System.out.println(c);
+        printAccountList(c,printBalance);
+    }
+
     private boolean checkCustomerOnList(Customer customer) {
         return customers.contains(customer);
     }
+
+
 
 }

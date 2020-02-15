@@ -1,5 +1,6 @@
 package threads.ZadanieBankZrobione;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -100,7 +101,7 @@ public class Bank {
                 customer.setAccounts(accounts);
                 System.out.println("Wpłata "+amount+" na rachunek "
                 +account + " zaksiegowana.");
-
+                return true;
             }
         }
         return customerNotFound(customer);
@@ -122,9 +123,34 @@ public class Bank {
             return false;
         }
         return customerNotFound(customer);
-
-
     }
+
+    public boolean deleteAccount(Customer customer, Account account){
+        if(checkCustomerOnList(customer)){
+            List<Account>accounts = customer.getAccounts();
+            if(accounts.contains(account)){
+                return removeAccountIfBalanceZero(account, accounts);
+            }
+            return accountNotFound(account);
+        }
+        return customerNotFound(customer);
+    }
+
+    private boolean removeAccountIfBalanceZero(Account account, List<Account> accounts) {
+        if(account.getBalance() ==0 ){
+            accounts.remove(account);
+            System.out.println("Konto usunięte" + account);
+            return  true;
+        }
+        System.out.println("Na rachunku "+account+" saldo niezerowe nie moge usunąc");
+        return false;
+    }
+
+    private boolean accountNotFound(Account account) {
+        System.out.println("Nie znaleziono konta "+account);
+        return false;
+    }
+
 
     public void printAccountList(Customer customer, boolean printBalance){
         if(checkCustomerOnList(customer)){
@@ -157,6 +183,20 @@ public class Bank {
         return customers.contains(customer);
     }
 
+    public void printAllBankAccounts(){
+        customers.stream().forEach(
+                c->{
+                    List<Account> customeAccounts =c.getAccounts();
+                    customeAccounts.forEach(System.out::println);
+                    }
+        );
+        System.out.println("===================================");
+                customers.stream()
+                        .map(Customer::getAccounts)
+                        .flatMap(x -> x.stream())
+                        .forEach(System.out::println);
+
+    }
 
 
 }

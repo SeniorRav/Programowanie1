@@ -1,11 +1,27 @@
 package threads.ZadanieBankZrobione;
 
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Bank {
-    static Integer customerNumber = 0;
-    static Integer accountNumber = 0;
+    private static Integer customerNumber = 0;
+    private static Integer accountNumber = 0;
+
+    public String getNextCustomerNumber(){
+       String newId = customerNumber.toString();
+       customerNumber++;
+       return newId;
+
+    }
+
+    public String getNextAccountNumber(){
+       String newId ="IBAN"+accountNumber.toString();
+        accountNumber++;
+        return newId;
+
+    }
+
 
     private String name;
     private List<Customer> customers;
@@ -15,14 +31,21 @@ public class Bank {
         customers = new ArrayList<>();
     }
 
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
+    }
+
     public boolean addCustomer(Customer customer){
         if(checkCustomerOnList(customer)){
             System.out.println("Klient "+customer+"już jest w systemie.");
             return false;
         }
-        customer.setId(customerNumber.toString());
+        customer.setId(getNextCustomerNumber());
         customers.add(customer);
-        customerNumber++;
         System.out.println("Klient "+ customer + " dodany");
         return true;
     }
@@ -58,7 +81,7 @@ public class Bank {
         if(checkCustomerOnList(customer)){
             List<Account>customerAccounts = customer.getAccounts();
             Account account = new Account(
-                    "IBAN"+accountNumber.toString());
+                    getNextAccountNumber());
             account.setAccountKind(accountKind);
             customerAccounts.add(account);
             accountNumber++;
@@ -69,8 +92,111 @@ public class Bank {
         return customerNotFound(customer);
     }
 
+    public boolean deposit(Customer customer,Account account,int amount){
+        if(customers.contains(customer)){
+            List<Account>accounts = customer.getAccounts();
+            if(accounts.contains(account)){
+                accounts.get(accounts.indexOf(account))
+                        .deposit(amount);
+                customer.setAccounts(accounts);
+                System.out.println("Wpłata "+amount+" na rachunek "
+                +account + " zaksiegowana.");
+                return true;
+            }
+        }
+        return customerNotFound(customer);
+    }
+
+    public boolean withdraw (Customer customer,Account account,int amount){
+        if(checkCustomerOnList(customer)) {
+            List<Account> accounts = customer.getAccounts();
+            if (accounts.contains(account)) {
+                if (accounts.get(accounts.indexOf(account)).withdraw(amount)) {
+                    System.out.println("Wypłata " + amount + " z rachunku"
+                            + account + " zaksiegowana.");
+                    return true;
+                }
+                System.out.println("Wypłata nie powiodła się");
+                return false;
+            }
+            System.out.println("Nie znaleziono konta "+ account+" dla klienta"+ customer);
+            return false;
+        }
+        return customerNotFound(customer);
+    }
+
+    public boolean deleteAccount(Customer customer, Account account){
+        if(checkCustomerOnList(customer)){
+            List<Account>accounts = customer.getAccounts();
+            if(accounts.contains(account)){
+                return removeAccountIfBalanceZero(account, accounts);
+            }
+            return accountNotFound(account);
+        }
+        return customerNotFound(customer);
+    }
+
+    private boolean removeAccountIfBalanceZero(Account account, List<Account> accounts) {
+        if(account.getBalance() ==0 ){
+            accounts.remove(account);
+            System.out.println("Konto usunięte" + account);
+            return  true;
+        }
+        System.out.println("Na rachunku "+account+" saldo niezerowe nie moge usunąc");
+        return false;
+    }
+
+    private boolean accountNotFound(Account account) {
+        System.out.println("Nie znaleziono konta "+account);
+        return false;
+    }
+
+
+    public void printAccountList(Customer customer, boolean printBalance){
+        if(checkCustomerOnList(customer)){
+            List<Account> accounts = customer.getAccounts();
+            accounts.stream()
+                    .forEach(a -> System.out.println(
+                            "\t"+a.getAccountNumber()+
+                                    " " +a.getAccountKind()+""+
+                                     (printBalance ? a.getBalance() : "")
+                    ));
+        }
+
+
+
+    }
+
+    public void printCustomerList (boolean printBalance){
+        customers.stream()
+                .forEach(c->
+                    printCustomerAndHisAccounts(printBalance, c)
+                );
+    }
+
+    private void printCustomerAndHisAccounts(boolean printBalance, Customer c) {
+        System.out.println(c);
+        printAccountList(c,printBalance);
+    }
+
     private boolean checkCustomerOnList(Customer customer) {
         return customers.contains(customer);
     }
+
+    public void printAllBankAccounts(){
+        customers.stream().forEach(
+                c->{
+                    List<Account> customeAccounts =c.getAccounts();
+                    customeAccounts.forEach(System.out::println);
+                    }
+        );
+        System.out.println("===================================");
+                customers.stream()
+                        .map(Customer::getAccounts)
+                        .flatMap(x -> x.stream())
+                        .forEach(System.out::println);
+
+    }
+
 
 }

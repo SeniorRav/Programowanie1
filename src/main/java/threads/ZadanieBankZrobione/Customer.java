@@ -14,7 +14,7 @@ public class Customer {
     public Customer(String name, String surname) {
         this.name = name;
         this.surname = surname;
-        accounts = new ArrayList<>()
+        accounts = new ArrayList<>();
     }
 
     public String getName() {
@@ -57,7 +57,7 @@ public class Customer {
 
     @Override
     public String toString() {
-        return "name='" + name + '\'' +
+        return "name='" + name + ' ' +
                 ", surname='" + surname;
     }
 
